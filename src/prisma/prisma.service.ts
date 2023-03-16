@@ -13,9 +13,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     });
   }
 
-  exclude <T, Key extends keyof T>(model: T, keys: Key[]): Omit<T, Key> {
+  exclude<T, Key extends keyof T>(model: T, keys: Key[]): Omit<T, Key> {
     for (const key of keys) {
-      delete model[key]
+      delete model[key];
     }
     return model;
   }
