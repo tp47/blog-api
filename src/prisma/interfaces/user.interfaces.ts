@@ -9,3 +9,8 @@ export interface UserGetAllParams {
   where?: Prisma.UserWhereInput;
   orderBy?: Prisma.UserOrderByWithRelationInput;
 }
+
+export interface UserUpdateParams {
+  where: Prisma.UserWhereUniqueInput;
+  data: Prisma.UserUpdateInput;
+}
