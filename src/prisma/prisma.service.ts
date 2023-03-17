@@ -1,5 +1,5 @@
 import { INestApplication, Injectable, OnModuleInit } from "@nestjs/common";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
@@ -18,5 +18,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       delete model[key];
     }
     return model;
+  }
+
+  cleanDatabase(): Promise<Prisma.BatchPayload[]> {
+    if (process.env.NODE_ENV === "production") return;
+    return this.$transaction([this.post.deleteMany(), this.user.deleteMany()]);
   }
 }
