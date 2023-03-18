@@ -6,6 +6,7 @@ import {
   UserWithoutHash,
 } from "src/prisma/interfaces";
 import { PrismaService } from "src/prisma/prisma.service";
+import { UserExistsException, UserNotFoundException } from "./exceptions";
 
 @Injectable()
 export class UserService {
@@ -17,6 +18,9 @@ export class UserService {
     const user = await this.prisma.user.findUnique({
       where,
     });
+    if (user === null) {
+      throw new UserNotFoundException();
+    }
     return this.prisma.exclude(user, ["hash"]);
   }
 
@@ -29,14 +33,25 @@ export class UserService {
       where,
       orderBy,
     });
+    if (users === null) {
+      throw new UserNotFoundException();
+    }
     return users.map((user) => this.prisma.exclude(user, ["hash"]));
   }
 
   async createUser(data: Prisma.UserCreateInput): Promise<UserWithoutHash> {
-    const user = await this.prisma.user.create({
-      data,
-    });
-    return this.prisma.exclude(user, ["hash"]);
+    try {
+      const user = await this.prisma.user.create({
+        data,
+      });
+      return this.prisma.exclude(user, ["hash"]);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2002") {
+          throw new UserExistsException();
+        }
+      }
+    }
   }
 
   async updateUser(params: UserUpdateParams): Promise<UserWithoutHash> {
