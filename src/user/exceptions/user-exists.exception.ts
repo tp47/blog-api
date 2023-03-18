@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
 
-export class UserExists extends HttpException {
+export class UserExistsException extends HttpException {
   constructor() {
     super(
       "User with provided credentials already exists",
