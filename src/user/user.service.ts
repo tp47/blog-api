@@ -1,10 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma } from "@prisma/client";
-import {
-  UserGetAllParams,
-  UserUpdateParams,
-  UserWithoutHash,
-} from "src/prisma/interfaces";
+import { Prisma, User } from "@prisma/client";
+import { UserGetAllParams, UserUpdateParams } from "src/prisma/interfaces";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UserExistsException, UserNotFoundException } from "./exceptions";
 
@@ -12,19 +8,17 @@ import { UserExistsException, UserNotFoundException } from "./exceptions";
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async getUniqueUser(
-    where: Prisma.UserWhereUniqueInput,
-  ): Promise<UserWithoutHash | null> {
+  async getUniqueUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where,
     });
     if (user === null) {
       throw new UserNotFoundException();
     }
-    return this.prisma.exclude(user, ["hash"]);
+    return user;
   }
 
-  async getAllUsers(params: UserGetAllParams): Promise<UserWithoutHash[]> {
+  async getAllUsers(params: UserGetAllParams): Promise<User[]> {
     const { skip, take, cursor, where, orderBy } = params;
     const users = await this.prisma.user.findMany({
       skip,
@@ -36,39 +30,38 @@ export class UserService {
     if (users === null) {
       throw new UserNotFoundException();
     }
-    return users.map((user) => this.prisma.exclude(user, ["hash"]));
+    return users;
   }
 
-  async createUser(data: Prisma.UserCreateInput): Promise<UserWithoutHash> {
+  async createUser(data: Prisma.UserCreateInput): Promise<User> {
     try {
       const user = await this.prisma.user.create({
         data,
       });
-      return this.prisma.exclude(user, ["hash"]);
+      return user;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2002") {
           throw new UserExistsException();
         }
       }
+      throw error;
     }
   }
 
-  async updateUser(params: UserUpdateParams): Promise<UserWithoutHash> {
+  async updateUser(params: UserUpdateParams): Promise<User> {
     const { where, data } = params;
     const user = await this.prisma.user.update({
       data,
       where,
     });
-    return this.prisma.exclude(user, ["hash"]);
+    return user;
   }
 
-  async deleteUser(
-    where: Prisma.UserWhereUniqueInput,
-  ): Promise<UserWithoutHash> {
+  async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
     const user = await this.prisma.user.delete({
       where,
     });
-    return this.prisma.exclude(user, ["hash"]);
+    return user;
   }
 }
