@@ -50,18 +50,36 @@ export class UserService {
   }
 
   async updateUser(params: UserUpdateParams): Promise<User> {
-    const { where, data } = params;
-    const user = await this.prisma.user.update({
-      data,
-      where,
-    });
-    return user;
+    try {
+      const { where, data } = params;
+      const user = await this.prisma.user.update({
+        data,
+        where,
+      });
+      return user;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          throw new UserNotFoundException()
+        }
+      }
+      throw error;
+    }
   }
 
   async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
+    try {
     const user = await this.prisma.user.delete({
       where,
     });
     return user;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          throw new UserNotFoundException()
+        }
+      }
+      throw error;
+    }
   }
 }
