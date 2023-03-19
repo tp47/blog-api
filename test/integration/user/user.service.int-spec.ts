@@ -124,4 +124,41 @@ describe("UserService integration tests", () => {
       }
     });
   });
+
+  describe("updateUser method", () => {
+    it("should update user", async () => {
+      const user = await userService.updateUser({
+        where: { id: userId },
+        data: { firstName: userData.userName },
+      });
+      expect(user).toMatchObject({
+        firstName: userData.userName,
+      });
+    });
+
+    it("should throw if user is not found", async () => {
+      try {
+        await userService.updateUser({
+          where: { id: 0 },
+          data: { firstName: userData.userName },
+        });
+      } catch (error) {
+        expect(error).toBeInstanceOf(UserNotFoundException);
+      }
+    });
+  });
+  describe("deleteUser method", () => {
+    it("should delete user", async () => {
+      const user = await userService.deleteUser({ id: userId });
+      expect(user).toMatchObject(userData);
+    });
+
+    it("should throw if user is not found", async () => {
+      try {
+        await userService.deleteUser({ id: 0 });
+      } catch (error) {
+        expect(error).toBeInstanceOf(UserNotFoundException);
+      }
+    });
+  });
 });
