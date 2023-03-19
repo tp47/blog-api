@@ -60,7 +60,7 @@ export class UserService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2025") {
-          throw new UserNotFoundException()
+          throw new UserNotFoundException();
         }
       }
       throw error;
@@ -69,14 +69,14 @@ export class UserService {
 
   async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
     try {
-    const user = await this.prisma.user.delete({
-      where,
-    });
-    return user;
+      const user = await this.prisma.user.delete({
+        where,
+      });
+      return user;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2025") {
-          throw new UserNotFoundException()
+          throw new UserNotFoundException();
         }
       }
       throw error;
