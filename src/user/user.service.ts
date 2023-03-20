@@ -27,9 +27,6 @@ export class UserService {
       where,
       orderBy,
     });
-    if (users === null) {
-      throw new UserNotFoundException();
-    }
     return users;
   }
 
