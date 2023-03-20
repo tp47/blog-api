@@ -125,6 +125,23 @@ describe("UserService integration tests", () => {
     });
   });
 
+  describe("getAllUsers method", () => {
+    it("should get all users", async () => {
+      const users = await userService.getAllUsers({});
+      expect(users[0]).toMatchObject(userData);
+    });
+
+    it("should get empty array if take param equals 0", async () => {
+      const users = await userService.getAllUsers({ take: 0 });
+      expect(users).toEqual([]);
+    });
+
+    it("should get empty array if where param does not satisfy the condition", async () => {
+      const users = await userService.getAllUsers({ where: { id: 0 } });
+      expect(users).toEqual([]);
+    });
+  });
+
   describe("updateUser method", () => {
     it("should update user", async () => {
       const user = await userService.updateUser({
