@@ -1,7 +1,8 @@
-type ValueOf<T> = T[keyof T]
+type ValueOf<T> = T[keyof T];
 
 export const Environment = {
-  PORT: "PORT"
+  PORT: "PORT",
+  SESSION_SECRET: "SESSION_SECRET",
 } as const;
 
-type Environment = ValueOf<typeof Environment>
+type Environment = ValueOf<typeof Environment>;
