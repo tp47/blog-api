@@ -20,9 +20,13 @@ async function bootstrap() {
       secret: config.get(Environment.SESSION_SECRET),
       resave: false,
       saveUninitialized: false,
-    })
-  )
+    }),
+  );
 
   await app.listen(config.get(Environment.PORT));
+
+  console.log(
+    `App listening on http://localhost:${config.get(Environment.PORT)}`,
+  );
 }
 bootstrap();
