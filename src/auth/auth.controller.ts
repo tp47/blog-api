@@ -1,5 +1,12 @@
-import { Body, ClassSerializerInterceptor, Controller, Post, Session, UseInterceptors } from "@nestjs/common";
-import {UserEntity} from "src/utils/entities";
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Post,
+  Session,
+  UseInterceptors,
+} from "@nestjs/common";
+import { UserEntity } from "src/utils/entities";
 import { AuthService } from "./auth.service";
 import { SignupDto } from "./dtos/signup.dto";
 import { UserSession } from "./interfaces";
@@ -10,7 +17,10 @@ export class AuthController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Post("signup")
-  async signup(@Body() dto: SignupDto, @Session() session: UserSession): Promise<UserEntity> {
+  async signup(
+    @Body() dto: SignupDto,
+    @Session() session: UserSession,
+  ): Promise<UserEntity> {
     const user = await this.authService.signup(dto);
     session.user = user;
 
