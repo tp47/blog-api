@@ -13,13 +13,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     });
   }
 
-  exclude<T, Key extends keyof T>(model: T, keys: Key[]): Omit<T, Key> {
-    for (const key of keys) {
-      delete model[key];
-    }
-    return model;
-  }
-
   cleanDatabase(): Promise<Prisma.BatchPayload[]> {
     if (process.env.NODE_ENV === "production") return;
     return this.$transaction([this.post.deleteMany(), this.user.deleteMany()]);
