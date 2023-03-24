@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { UserService } from "src/user/user.service";
 import * as argon2 from "argon2";
 import { SignupDto } from "./dtos/signup.dto";
+import { SigninDto } from "./dtos";
+import { IncorrectPassword } from "./exceptions";
 
 @Injectable()
 export class AuthService {
@@ -16,6 +18,21 @@ export class AuthService {
         hash,
       });
       return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async signin(dto: SigninDto) {
+    try {
+      const user = await this.userService.getUniqueUser({
+        userName: dto.userName,
+      });
+      if (await argon2.verify(user.hash, dto.password)) {
+        return user;
+      } else {
+        throw new IncorrectPassword();
+      }
     } catch (error) {
       throw error;
     }
