@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
 
-export class IncorrectPassword extends HttpException {
+export class IncorrectPasswordException extends HttpException {
   constructor() {
     super(
       "Credentials are incorrect",

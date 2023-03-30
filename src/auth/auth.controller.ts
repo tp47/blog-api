@@ -8,6 +8,7 @@ import {
   Session,
   UseInterceptors,
 } from "@nestjs/common";
+import {User} from "@prisma/client";
 import { UserEntity } from "src/utils/entities";
 import { AuthService } from "./auth.service";
 import { SigninDto } from "./dtos";
@@ -24,11 +25,10 @@ export class AuthController {
   async signup(
     @Body() dto: SignupDto,
     @Session() session: UserSession,
-  ): Promise<UserEntity> {
+  ): Promise<User> {
     const user = await this.authService.signup(dto);
-    const userEntity = new UserEntity(user);
-    session.user = userEntity;
-    return userEntity;
+    session.user = user;
+    return new UserEntity(user);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -37,10 +37,9 @@ export class AuthController {
   async signin(
     @Body() dto: SigninDto,
     @Session() session: UserSession,
-  ): Promise<UserEntity> {
+  ): Promise<User> {
     const user = await this.authService.signin(dto);
-    const userEntity = new UserEntity(user);
-    session.user = userEntity;
-    return userEntity;
+    session.user = user;
+    return new UserEntity(user);
   }
 }

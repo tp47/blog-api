@@ -3,7 +3,7 @@ import { UserService } from "src/user/user.service";
 import * as argon2 from "argon2";
 import { SignupDto } from "./dtos/signup.dto";
 import { SigninDto } from "./dtos";
-import { IncorrectPassword } from "./exceptions";
+import { IncorrectPasswordException } from "./exceptions";
 
 @Injectable()
 export class AuthService {
@@ -31,7 +31,7 @@ export class AuthService {
       if (await argon2.verify(user.hash, dto.password)) {
         return user;
       } else {
-        throw new IncorrectPassword();
+        throw new IncorrectPasswordException();
       }
     } catch (error) {
       throw error;
