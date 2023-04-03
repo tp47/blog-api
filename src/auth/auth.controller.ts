@@ -8,7 +8,7 @@ import {
   Session,
   UseInterceptors,
 } from "@nestjs/common";
-import {User} from "@prisma/client";
+import { User } from "@prisma/client";
 import { UserEntity } from "src/utils/entities";
 import { AuthService } from "./auth.service";
 import { SigninDto } from "./dtos";
