@@ -5,6 +5,7 @@ import {
   PostUpdateParams,
 } from "src/prisma/interfaces/post.interfaces";
 import { PrismaService } from "src/prisma/prisma.service";
+import {UserNotFoundException} from "src/user/exceptions";
 import { PostNotFoundException } from "./exceptions";
 import { PostExistsException } from "./exceptions/post-exists.exception";
 
@@ -34,16 +35,29 @@ export class PostService {
     return posts;
   }
 
-  async createPost(data: Prisma.PostCreateInput): Promise<Post> {
+  async createPost(
+    data: Prisma.PostCreateWithoutAuthorInput,
+    userId: number,
+  ): Promise<Post> {
     try {
       const post = await this.prisma.post.create({
-        data,
+        data: {
+          ...data,
+          author: {
+            connect: {
+              id: userId,
+            },
+          },
+        },
       });
       return post;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2002") {
           throw new PostExistsException();
+        }
+        if (error.code === "P2025") {
+          throw new UserNotFoundException();
         }
       }
       throw error;
